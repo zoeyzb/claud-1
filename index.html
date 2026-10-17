@@ -82,10 +82,26 @@ main,header,footer{position:relative;z-index:1}
 #faq .faq-toggle{font-size:1.2rem;font-weight:400;color:var(--mut);display:block;transition:transform .18s ease}
 #faq details[open] .faq-toggle{transform:rotate(45deg)}
 #faq details p{color:var(--mut);font-size:.89rem;line-height:1.65;padding:0 48px 22px 0;max-width:65ch}
-#join .halo-service-row{margin:0 0 14px;display:flex;gap:12px;align-items:center}
-#join .halo-service-row label{flex:0 0 auto;color:var(--mut);font-size:.85rem}
-#join .halo-service-row select{min-width:0;flex:1;padding:10px 20px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:999px;outline-offset:3px;cursor:pointer}
-@media(max-width:700px){#faq{padding:60px 20px 55px}#faq .faq-shell{display:block}#faq .faq-items{margin-top:25px}#faq summary{padding:21px 0}#faq details p{padding-right:14px}#join .halo-service-row{align-items:stretch;flex-direction:column;gap:7px}}
+/* Compact custom service selector; options expand in normal page flow. */
+#join .halo-service-picker{margin:0 0 16px}
+#join .halo-service-label-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 3px 9px}
+#join .halo-service-caption{font-size:.8rem;color:var(--mut)}
+#join .halo-service-clear{font-size:.76rem;color:var(--mut);background:transparent;border:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+#join .halo-service-clear:hover{color:var(--fg)}
+#join .halo-service-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:52px;padding:12px 19px;text-align:left;border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 94%,transparent);color:var(--fg);font:inherit;font-size:.95rem;cursor:pointer;transition:border-color .18s ease,background .18s ease}
+#join .halo-service-trigger:hover,#join .halo-service-trigger[aria-expanded="true"]{border-color:color-mix(in srgb,var(--fg) 46%,transparent);background:color-mix(in srgb,var(--bg) 92%,var(--fg) 8%)}
+#join .halo-service-placeholder{color:var(--mut)}
+#join .halo-service-chevron{font-size:1.2rem;line-height:1;color:var(--mut);display:inline-block;transition:transform .18s ease}
+#join .halo-service-trigger[aria-expanded="true"] .halo-service-chevron{transform:rotate(180deg)}
+#join .halo-service-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px;padding:11px;border:1px solid var(--line);border-radius:19px;background:color-mix(in srgb,var(--bg) 94%,var(--fg) 6%)}
+#join .halo-service-options[hidden]{display:none!important}
+#join .halo-service-option{display:flex;align-items:center;justify-content:space-between;gap:9px;min-width:0;min-height:46px;padding:11px 13px;text-align:left;line-height:1.28;font-family:inherit;font-size:.86rem;background:transparent;color:var(--fg);border:1px solid var(--line);border-radius:11px;cursor:pointer;transition:background .18s ease,border-color .18s ease,color .18s ease}
+#join .halo-service-option:hover,#join .halo-service-option[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+#join .halo-service-tick{font-size:.85rem;opacity:.55;flex:0 0 auto}
+#join .halo-service-option[aria-pressed="true"] .halo-service-tick{opacity:1}
+@media(max-width:390px){#join .halo-service-options{padding:8px;gap:6px}#join .halo-service-option{font-size:.78rem;padding:10px;min-height:50px}}
+@media(prefers-reduced-motion:reduce){#join .halo-service-trigger,#join .halo-service-chevron,#join .halo-service-option{transition:none}}
+@media(max-width:700px){#faq{padding:60px 20px 55px}#faq .faq-shell{display:block}#faq .faq-items{margin-top:25px}#faq summary{padding:21px 0}#faq details p{padding-right:14px}}
 @media(prefers-reduced-motion:reduce){#faq .faq-toggle{transition:none}}
 </style>
 </head>
@@ -252,9 +268,9 @@ const CONTACT_EMAIL='sierra@recoverrevenue.company';
 const CONTACT_ENDPOINT='https://formsubmit.co/ajax/'+CONTACT_EMAIL;
 function Join(){
   const[name,setName]=useState(''),[email,setEmail]=useState(''),[message,setMessage]=useState(''),[honey,setHoney]=useState('');
-  const[status,setStatus]=useState('idle'),[error,setError]=useState(''),[copied,setCopied]=useState(false),[service,setService]=useState('');
+  const[status,setStatus]=useState('idle'),[error,setError]=useState(''),[copied,setCopied]=useState(false),[service,setService]=useState(''),[servicePickerOpen,setServicePickerOpen]=useState(false);
   React.useEffect(()=>{
-    const onSelect=e=>setService(e.detail.service);
+    const onSelect=e=>{setService(e.detail.service);setServicePickerOpen(false)};
     window.addEventListener('halo:service-selected',onSelect);
     return()=>window.removeEventListener('halo:service-selected',onSelect);
   },[]);
@@ -306,11 +322,16 @@ function Join(){
     h('p',{className:'mut text-base mt-3',style:{fontFamily:'Inter Tight'}},'We look forward to hearing about your project.'));
   const field='w-full rounded-full bg-transparent border hair px-6 py-4 text-lg outline-none focus:border-[var(--fg)] transition-colors';
   return h('form',{onSubmit:submit,noValidate:true,className:'w-full max-w-xl mx-auto text-left'},
-    h('div',{className:'halo-service-row'},
-      h('label',{htmlFor:'halo-service'},'Interested in'),
-      h('select',{id:'halo-service',value:service,onChange:e=>setService(e.target.value),name:'service'},
-        h('option',{value:''},'Choose a service (optional)'),
-        ...ACTIONS.map(a=>h('option',{key:a[0],value:a[0]},a[0])))),
+    h('div',{className:'halo-service-picker',onKeyDown:e=>{if(e.key==='Escape'&&servicePickerOpen){setServicePickerOpen(false);document.getElementById('halo-service-trigger')?.focus()}}},
+      h('div',{className:'halo-service-label-row'},
+        h('span',{id:'halo-service-label',className:'halo-service-caption'},'Interested in'),
+        service?h('button',{type:'button',className:'halo-service-clear',onClick:()=>{setService('');setServicePickerOpen(false)}},'Clear'):null),
+      h('button',{id:'halo-service-trigger',type:'button',className:'halo-service-trigger','aria-labelledby':'halo-service-label halo-service-current','aria-expanded':servicePickerOpen,'aria-controls':'halo-service-options',onClick:()=>setServicePickerOpen(v=>!v)},
+        h('span',{id:'halo-service-current',className:service?'halo-service-value':'halo-service-placeholder'},service||'Select a service (optional)'),
+        h('span',{className:'halo-service-chevron','aria-hidden':'true'},'⌄')),
+      h('div',{id:'halo-service-options',className:'halo-service-options',hidden:!servicePickerOpen,role:'group','aria-label':'Available services'},
+        ...ACTIONS.map(a=>h('button',{key:a[0],type:'button',className:'halo-service-option','aria-pressed':service===a[0],onClick:()=>{setService(a[0]);setServicePickerOpen(false);document.getElementById('halo-service-trigger')?.focus()}},
+          h('span',null,a[0]),h('span',{className:'halo-service-tick','aria-hidden':'true'},service===a[0]?'✓':'↗'))))),
     h('div',{className:'grid sm:grid-cols-2 gap-3'},
       h('div',null,
         h('label',{htmlFor:'halo-name',className:'sr-only'},'Your name'),
