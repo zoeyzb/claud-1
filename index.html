@@ -164,7 +164,7 @@ function Join(){
         signal:controller.signal
       });
       const result=await response.json();
-      if(!response.ok||result.success!==true)throw new Error('Inquiry service could not confirm delivery.');
+      if(!response.ok||String(result.success).toLowerCase()!=='true')throw new Error('Inquiry service could not confirm delivery.');
       setStatus('sent');
     }catch(err){
       setError('We could not send your inquiry. Please email us directly.');
