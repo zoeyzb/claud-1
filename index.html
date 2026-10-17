@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Halo — the quiet layer for team work</title>
+<meta name="color-scheme" content="dark light">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+:root{--bg:#050505;--fg:#f3eee3;--mut:#8f8b82;--line:rgba(243,238,227,.14);--chr:#c9ccd1;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f3eee3;--fg:#050505;--mut:#6d6a63;--line:rgba(5,5,5,.16);--chr:#4a4d52;color-scheme:light}}
+:root[data-theme="dark"]{--bg:#050505;--fg:#f3eee3}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400;letter-spacing:-.02em}
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main,header,footer{position:relative;z-index:1}
+.hair{border-color:var(--line)}
+.mut{color:var(--mut)}
+.btn{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 1.5rem;border-radius:999px;background:var(--fg);color:var(--bg);font-weight:500;font-size:.95rem;border:0;cursor:pointer;will-change:transform}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+:focus-visible{outline:2px solid var(--chr);outline-offset:3px}
+.w{opacity:.14}
+.cmd{background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:20px}
+.row[aria-selected=true]{background:var(--line)}
+.caret::after{content:"";display:inline-block;width:1px;height:1em;background:var(--fg);margin-left:2px;animation:b 1s steps(1) infinite;vertical-align:-2px}
+@keyframes b{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.caret::after{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<header class="fixed top-0 inset-x-0 z-50" style="padding-top:env(safe-area-inset-top,0px)">
+  <div class="mx-auto max-w-[1280px] px-6 md:px-10 h-16 flex items-center justify-between">
+    <a href="#top" class="serif text-2xl" aria-label="Halo home">Halo</a>
+    <nav class="flex items-center gap-6 text-sm">
+      <a href="#demo" class="mut hover:text-[var(--fg)] transition-colors hidden sm:block">Try it</a>
+      <a href="#how" class="mut hover:text-[var(--fg)] transition-colors hidden sm:block">How it works</a>
+      <a href="#join" class="btn !py-2 !px-4 text-sm" data-mag>Get access</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section id="hero" class="min-h-[100svh] flex items-end">
+    <div class="mx-auto max-w-[1280px] w-full px-6 md:px-10 pb-16 md:pb-24">
+      <h1 class="serif text-[clamp(3rem,9vw,8.5rem)] leading-[.95] max-w-[12ch]" id="h1">The quiet layer for how teams get things done.</h1>
+      <div class="mt-10 flex flex-col sm:flex-row sm:items-end justify-between gap-8">
+        <p class="mut max-w-[34ch] text-lg leading-snug">Halo sits above your tools and turns a sentence into the next action. Nothing to learn. Nothing to configure first.</p>
+        <div class="flex gap-3"><a href="#demo" class="btn" data-mag>Try the command bar</a><a href="#join" class="btn ghost" data-mag>Join the waitlist</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-[28vh]">
+    <div class="mx-auto max-w-[1100px] px-6 md:px-10">
+      <p id="statement" class="serif text-[clamp(2rem,5.2vw,4.6rem)] leading-[1.08]">Most software asks you to go to it. Halo meets you where the work already is, understands what you meant, and gets out of the way.</p>
+    </div>
+  </section>
+
+  <section id="demo" class="py-[14vh]">
+    <div class="mx-auto max-w-[1280px] px-6 md:px-10 grid md:grid-cols-12 gap-12">
+      <div class="md:col-span-4">
+        <h2 class="serif text-5xl md:text-6xl leading-none">Say what you need.</h2>
+        <p class="mut mt-6 max-w-[30ch]">This is the real interaction, with sample actions. Type to filter, use the arrow keys, press Enter to run one.</p>
+      </div>
+      <div class="md:col-span-8" id="cmd-root"></div>
+    </div>
+  </section>
+
+  <section id="how" class="py-[18vh]">
+    <div class="mx-auto max-w-[1280px] px-6 md:px-10">
+      <h2 class="serif text-5xl md:text-7xl leading-none max-w-[14ch]">Built around three decisions.</h2>
+      <div class="mt-20 border-t hair">
+        <div class="grid md:grid-cols-12 gap-4 py-10 border-b hair"><h3 class="serif text-3xl md:col-span-4">One input</h3><p class="mut md:col-span-6 md:col-start-7 text-lg max-w-[44ch]">A single bar replaces the menus, tabs and dashboards you'd otherwise hunt through. If you can say it, you can do it.</p></div>
+        <div class="grid md:grid-cols-12 gap-4 py-10 border-b hair"><h3 class="serif text-3xl md:col-span-4">Your tools stay</h3><p class="mut md:col-span-6 md:col-start-7 text-lg max-w-[44ch]">Halo works through the tools your team already trusts. No migration, no second source of truth to keep in sync.</p></div>
+        <div class="grid md:grid-cols-12 gap-4 py-10 border-b hair"><h3 class="serif text-3xl md:col-span-4">You approve</h3><p class="mut md:col-span-6 md:col-start-7 text-lg max-w-[44ch]">Halo proposes, you confirm. Every action shows what will change before it happens, and can be undone after.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="join" class="py-[22vh]">
+    <div class="mx-auto max-w-[900px] px-6 md:px-10 text-center">
+      <h2 class="serif text-[clamp(2.6rem,7vw,6rem)] leading-[.98]">Early access is open to small teams.</h2>
+      <p class="mut mt-6 text-lg">Leave your email and we'll write when your invitation is ready.</p>
+      <div id="join-root" class="mt-12"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="border-t hair">
+  <div class="mx-auto max-w-[1280px] px-6 md:px-10 py-10 flex flex-wrap justify-between gap-4 text-sm mut">
+    <span class="serif text-xl text-[var(--fg)]">Halo</span>
+    <span>A design demo. Product and sample actions are illustrative.</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+const h=React.createElement,{useState,useRef,useId}=React;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Command bar (functional) ---------- */
+const ACTIONS=[
+ ['Draft release notes','from this week\'s merged changes','release notes writing'],
+ ['Summarize open incidents','grouped by owner and severity','incident status summary'],
+ ['Schedule a design review','finds a slot that fits everyone','meeting calendar review'],
+ ['Assign an owner','to every ticket that has none','ticket owner assign'],
+ ['Archive stale threads','quiet for more than 30 days','archive clean thread'],
+ ['Write the weekly update','for the people who weren\'t in the room','update weekly report']
+];
+function Cmd(){
+  const[q,setQ]=useState(''),[i,setI]=useState(0),[log,setLog]=useState([]);
+  const list=ACTIONS.filter(a=>(a[0]+' '+a[2]).toLowerCase().includes(q.trim().toLowerCase()));
+  const sel=Math.min(i,Math.max(list.length-1,0)),id=useId();
+  const run=a=>{if(!a)return;setLog(l=>[{t:a[0],k:Date.now()},...l].slice(0,3));setQ('');setI(0)};
+  const key=e=>{
+    if(e.key==='ArrowDown'){e.preventDefault();setI((sel+1)%Math.max(list.length,1))}
+    else if(e.key==='ArrowUp'){e.preventDefault();setI((sel-1+list.length)%Math.max(list.length,1))}
+    else if(e.key==='Enter'){e.preventDefault();run(list[sel])}
+  };
+  return h('div',{className:'cmd overflow-hidden'},
+    h('label',{htmlFor:id,className:'sr-only'},'What do you need?'),
+    h('input',{id,value:q,onChange:e=>{setQ(e.target.value);setI(0)},onKeyDown:key,placeholder:'What do you need to get done?',autoComplete:'off',role:'combobox','aria-expanded':true,'aria-controls':id+'l',className:'w-full bg-transparent px-6 py-6 text-xl outline-none border-b hair placeholder:text-[var(--mut)]'}),
+    h('ul',{id:id+'l',role:'listbox',className:'p-2 min-h-[18rem]'},
+      list.length?list.map((a,n)=>h('li',{key:a[0],role:'option','aria-selected':n===sel,className:'row flex items-baseline justify-between gap-4 rounded-xl px-4 py-3.5 cursor-pointer transition-colors',onMouseEnter:()=>setI(n),onClick:()=>run(a)},
+        h('span',{className:'text-lg'},a[0]),h('span',{className:'mut text-sm hidden sm:block'},a[1])))
+      :h('li',{className:'px-4 py-6 mut'},'Nothing matches “'+q+'”. Try “release”, “incident” or “meeting”.')),
+    h('div',{className:'border-t hair px-6 py-4 text-sm min-h-[5.5rem]','aria-live':'polite'},
+      log.length?log.map((l,n)=>h('div',{key:l.k,className:'flex gap-3 '+(n?'mut':'')},h('span',{className:'mut'},'Proposed'),h('span',null,l.t+' — ready for your approval'))):h('span',{className:'mut'},'Proposed actions appear here. Nothing runs until you approve.')));
+}
+
+/* ---------- Waitlist (functional, stored locally) ---------- */
+function Join(){
+  const[v,setV]=useState(''),[err,setErr]=useState(''),[done,setDone]=useState(()=>{try{return localStorage.getItem('halo-email')}catch(e){return null}});
+  const submit=e=>{e.preventDefault();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){setErr('Enter an email like name@company.com.');return}
+    try{localStorage.setItem('halo-email',v)}catch(e){}setDone(v)};
+  if(done)return h('div',{className:'serif text-3xl','aria-live':'polite'},'You\'re on the list, '+done+'.',h('p',{className:'mut text-base mt-3',style:{fontFamily:'Inter Tight'}},'Demo only: this address is saved in your browser and sent nowhere.'));
+  return h('form',{onSubmit:submit,noValidate:true,className:'flex flex-col sm:flex-row gap-3 justify-center'},
+    h('div',{className:'flex-1 max-w-md text-left'},
+      h('label',{htmlFor:'em',className:'sr-only'},'Work email'),
+      h('input',{id:'em',type:'email',value:v,onChange:e=>{setV(e.target.value);setErr('')},placeholder:'Work email','aria-invalid':!!err,'aria-describedby':'er',className:'w-full rounded-full bg-transparent border hair px-6 py-4 text-lg outline-none focus:border-[var(--fg)] transition-colors'}),
+      h('p',{id:'er',role:'alert',className:'text-sm mt-2 px-2 min-h-[1.25rem]'},err)),
+    h('button',{type:'submit',className:'btn self-start !py-4','data-mag':true},'Request access'));
+}
+ReactDOM.createRoot(document.getElementById('cmd-root')).render(h(Cmd));
+ReactDOM.createRoot(document.getElementById('join-root')).render(h(Join));
+
+/* ---------- Smooth scroll + GSAP ---------- */
+gsap.registerPlugin(ScrollTrigger);
+if(!reduce&&window.Lenis){const L=new Lenis({lerp:.09});L.on('scroll',ScrollTrigger.update);gsap.ticker.add(t=>L.raf(t*1000));gsap.ticker.lagSmoothing(0);
+  document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();L.scrollTo(t,{offset:0})}}))}
+
+const st={p:0};
+gsap.to(st,{p:1,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+
+/* statement: words light up as you read */
+const s=document.getElementById('statement');
+s.innerHTML=s.textContent.split(' ').map(w=>'<span class="w">'+w+'</span>').join(' ');
+if(reduce)s.querySelectorAll('.w').forEach(w=>w.style.opacity=1);
+else gsap.to('#statement .w',{opacity:1,stagger:.1,ease:'none',scrollTrigger:{trigger:'#statement',start:'top 80%',end:'bottom 45%',scrub:true}});
+
+/* the one entrance: headline lines on load */
+if(!reduce)gsap.from('#h1',{y:40,opacity:0,duration:1.4,ease:'power4.out',delay:.2});
+
+/* magnetic buttons */
+if(!reduce&&matchMedia('(hover:hover)').matches)document.querySelectorAll('[data-mag]').forEach(b=>{
+  b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();gsap.to(b,{x:(e.clientX-r.left-r.width/2)*.3,y:(e.clientY-r.top-r.height/2)*.4,duration:.4,ease:'power3.out'})});
+  b.addEventListener('mouseleave',()=>gsap.to(b,{x:0,y:0,duration:.9,ease:'elastic.out(1,.4)'}))});
+
+/* ---------- Three.js hero ---------- */
+(function(){
+  const cv=document.getElementById('gl');
+  let r;try{r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true})}catch(e){return}
+  r.setPixelRatio(Math.min(devicePixelRatio,2));r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.1;
+  const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(35,1,.1,50);
+
+  // studio environment painted on a canvas -> reflective chrome without external assets
+  const c=document.createElement('canvas');c.width=1024;c.height=512;const x=c.getContext('2d');
+  x.fillStyle='#060606';x.fillRect(0,0,1024,512);
+  const panel=(a,b,w,hh,col)=>{const g=x.createLinearGradient(a,b,a,b+hh);g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(a,b,w,hh)};
+  panel(120,40,320,200,'#fff4e0');panel(620,60,200,260,'#dfe8ff');panel(0,0,1024,50,'#7c7a74');panel(450,300,140,160,'#b8b3a8');
+  const tex=new THREE.CanvasTexture(c);tex.mapping=THREE.EquirectangularReflectionMapping;
+  const pm=new THREE.PMREMGenerator(r);sc.environment=pm.fromEquirectangular(tex).texture;
+
+  const mat=new THREE.MeshStandardMaterial({color:0xd5d7db,metalness:1,roughness:.16,envMapIntensity:1.25});
+  const knot=new THREE.Mesh(new THREE.TorusKnotGeometry(1,.3,320,40,2,3),mat);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(1.95,.005,8,240),new THREE.MeshBasicMaterial({color:0xf3eee3,transparent:true,opacity:.35}));
+  ring.rotation.x=1.2;
+  const g=new THREE.Group();g.add(knot,ring);sc.add(g);
+
+  const m={x:0,y:0,sx:0,sy:0};
+  addEventListener('pointermove',e=>{m.x=e.clientX/innerWidth-.5;m.y=e.clientY/innerHeight-.5});
+  function size(){const w=innerWidth,hh=innerHeight;r.setSize(w,hh,false);cam.aspect=w/hh;cam.position.z=w<760?7.4:5.6;cam.updateProjectionMatrix()}
+  size();addEventListener('resize',size);
+
+  const clock=new THREE.Clock();
+  (function loop(){
+    const t=clock.getElapsedTime(),wide=innerWidth>=900;
+    m.sx+=(m.x-m.sx)*.05;m.sy+=(m.y-m.sy)*.05;
+    g.rotation.y=(reduce?0:t*.12)+m.sx*1.2+st.p*2.6;
+    g.rotation.x=m.sy*.7+st.p*.6;
+    ring.rotation.z=reduce?0:t*.08;
+    g.position.x=(wide?1.7:0)*(1-st.p*.6);
+    g.position.y=(wide?0:1.5)+st.p*1.4;
+    g.scale.setScalar(1+st.p*.25);
+    cv.style.opacity=Math.max(.16,1-st.p*.9);
+    r.render(sc,cam);requestAnimationFrame(loop);
+  })();
+})();
+</script>
+</body>
+</html>
