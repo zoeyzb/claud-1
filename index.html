@@ -139,19 +139,19 @@ function Cmd(){
 }
 
 /* ---------- Project inquiries: email delivery via FormSubmit ---------- */
-/* First submission requires recipient email activation at formsubmit.co. */
+/* Recipient activated via FormSubmit on 2026-10-17. */
 const CONTACT_EMAIL='sierra@recoverrevenue.company';
 const CONTACT_ENDPOINT='https://formsubmit.co/ajax/'+CONTACT_EMAIL;
 function Join(){
   const[name,setName]=useState(''),[email,setEmail]=useState(''),[message,setMessage]=useState(''),[honey,setHoney]=useState('');
-  const[status,setStatus]=useState('idle'),[error,setError]=useState('');
+  const[status,setStatus]=useState('idle'),[error,setError]=useState(''),[copied,setCopied]=useState(false);
   const submit=async e=>{
     e.preventDefault();
     if(status==='sending')return;
     const n=name.trim(),em=email.trim(),msg=message.trim();
-    if(n.length<2){setError('Please enter your name.');return}
+    if(!n){setError('Please enter your name.');return}
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){setError('Enter a valid email address.');return}
-    if(msg.length<10){setError('Tell us a little about your project (at least 10 characters).');return}
+    if(!msg){setError('Please add a message.');return}
     if(honey)return;
     setError('');setStatus('sending');
     const controller=new AbortController();
@@ -167,9 +167,26 @@ function Join(){
       if(!response.ok||String(result.success).toLowerCase()!=='true')throw new Error('Inquiry service could not confirm delivery.');
       setStatus('sent');
     }catch(err){
-      setError('We could not send your inquiry. Please email us directly.');
+      setError('Message not sent. Please try again, or copy our email below.');
       setStatus('idle');
     }finally{clearTimeout(timer)}
+  };
+  const copyEmail=async()=>{
+    try{
+      if(navigator.clipboard&&window.isSecureContext){
+        await navigator.clipboard.writeText(CONTACT_EMAIL);
+      }else{
+        const input=document.createElement('textarea');
+        input.value=CONTACT_EMAIL;input.style.position='fixed';input.style.opacity='0';
+        document.body.appendChild(input);input.select();
+        const ok=document.execCommand('copy');input.remove();
+        if(!ok)throw new Error('copy unavailable');
+      }
+      setCopied(true);
+    }catch(e){
+      setCopied(false);
+      setError('Copy the email address shown below to contact us directly.');
+    }
   };
   if(status==='sent')return h('div',{className:'serif text-3xl','role':'status'},
     'Thank you. Your inquiry has been submitted.',
@@ -190,8 +207,11 @@ function Join(){
     h('div',{className:'flex flex-wrap items-center justify-between gap-4 mt-3'},
       h('p',{className:'mut text-sm max-w-[32ch]'},'Your details are used only to respond to your inquiry.'),
       h('button',{type:'submit',disabled:status==='sending',className:'btn !py-4 disabled:opacity-60','data-mag':true},status==='sending'?'Sending…':"Let's talk")),
-    h('p',{role:'alert','aria-live':'polite',className:'text-sm mt-3 min-h-[1.25rem]'},
-      error? h(React.Fragment,null,error,' ',h('a',{href:'mailto:'+CONTACT_EMAIL,className:'underline'},'Email Halo')):''));
+    h('p',{role:'alert','aria-live':'polite',className:'text-sm mt-3 min-h-[1.25rem]'},error),
+    h('div',{className:'mut text-sm mt-3 flex flex-wrap items-center gap-x-2 gap-y-1'},
+      h('span',null,'Prefer email?'),
+      h('span',{className:'text-[var(--fg)] break-all'},CONTACT_EMAIL),
+      h('button',{type:'button',onClick:copyEmail,className:'underline underline-offset-4 hover:text-[var(--fg)] focus-visible:outline-2','aria-label':'Copy Halo email address'},copied?'Copied!':'Copy address')));
 }
 ReactDOM.createRoot(document.getElementById('cmd-root')).render(h(Cmd));
 ReactDOM.createRoot(document.getElementById('join-root')).render(h(Join));
