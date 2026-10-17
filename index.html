@@ -47,9 +47,9 @@ main,header,footer{position:relative;z-index:1}
 <main id="top">
   <section id="hero" class="min-h-[100svh] flex items-end">
     <div class="mx-auto max-w-[1280px] w-full px-6 md:px-10 pb-16 md:pb-24">
-      <h1 class="serif text-[clamp(3rem,9vw,8.5rem)] leading-[.95] max-w-[12ch]" id="h1">The invisible intelligence behind your business.</h1>
+      <h1 class="serif text-[clamp(3rem,9vw,8.5rem)] leading-[.95] max-w-[12ch]" id="h1">AI systems. Built for your business.</h1>
       <div class="mt-10 flex flex-col sm:flex-row sm:items-end justify-between gap-8">
-        <p class="mut max-w-[34ch] text-lg leading-snug">We build AI agents, intelligent automations, and custom software that simplify operations, connect your tools, and take repetitive work off your hands.</p>
+        <ul class="mut max-w-[34ch] text-lg leading-snug list-disc pl-5 space-y-1"><li>AI agents for calls and support.</li><li>Automations that connect your tools.</li><li>Software built for your workflow.</li></ul>
         <div class="flex gap-3"><a href="#demo" class="btn" data-mag>Explore our systems</a><a href="#join" class="btn ghost" data-mag>Start a project</a></div>
       </div>
     </div>
@@ -57,15 +57,15 @@ main,header,footer{position:relative;z-index:1}
 
   <section class="py-[28vh]">
     <div class="mx-auto max-w-[1100px] px-6 md:px-10">
-      <p id="statement" class="serif text-[clamp(2rem,5.2vw,4.6rem)] leading-[1.08]">The best technology doesn't demand more of your time. It gives it back. We build the systems that handle the repetitive work, so you can focus on everything else.</p>
+      <p id="statement" class="serif text-[clamp(2rem,5.2vw,4.6rem)] leading-[1.08]">Your business has better things to do than repetitive work. We build systems that take care of it.</p>
     </div>
   </section>
 
   <section id="demo" class="py-[14vh]">
     <div class="mx-auto max-w-[1280px] px-6 md:px-10 grid md:grid-cols-12 gap-12">
       <div class="md:col-span-4">
-        <h2 class="serif text-5xl md:text-6xl leading-none">Tell us what you want to automate.</h2>
-        <p class="mut mt-6 max-w-[30ch]">Explore what Halo can build for your business. Search our services, use the arrow keys, and press Enter to select one.</p>
+        <h2 class="serif text-5xl md:text-6xl leading-none">What should we automate?</h2>
+        <p class="mut mt-6 max-w-[30ch]">Search our services. Choose one, then tell us what you need.</p>
       </div>
       <div class="md:col-span-8" id="cmd-root"></div>
     </div>
@@ -73,19 +73,19 @@ main,header,footer{position:relative;z-index:1}
 
   <section id="how" class="py-[18vh]">
     <div class="mx-auto max-w-[1280px] px-6 md:px-10">
-      <h2 class="serif text-5xl md:text-7xl leading-none max-w-[14ch]">From complexity to clarity.</h2>
+      <h2 class="serif text-5xl md:text-7xl leading-none max-w-[14ch]">Simple from start to finish.</h2>
       <div class="mt-20 border-t hair">
-        <div class="grid md:grid-cols-12 gap-4 py-10 border-b hair"><h3 class="serif text-3xl md:col-span-4">Understand</h3><p class="mut md:col-span-6 md:col-start-7 text-lg max-w-[44ch]">We study your workflows, find the bottlenecks, and identify where intelligent systems can make a difference.</p></div>
-        <div class="grid md:grid-cols-12 gap-4 py-10 border-b hair"><h3 class="serif text-3xl md:col-span-4">Engineer</h3><p class="mut md:col-span-6 md:col-start-7 text-lg max-w-[44ch]">We design and develop tailored AI agents, automations, integrations, and business applications.</p></div>
-        <div class="grid md:grid-cols-12 gap-4 py-10 border-b hair"><h3 class="serif text-3xl md:col-span-4">Evolve</h3><p class="mut md:col-span-6 md:col-start-7 text-lg max-w-[44ch]">We launch, refine, and support your systems as your business grows.</p></div>
+        <div class="grid md:grid-cols-12 gap-4 py-10 border-b hair"><h3 class="serif text-3xl md:col-span-4">Understand</h3><p class="mut md:col-span-6 md:col-start-7 text-lg max-w-[44ch]">We find the tasks slowing your business down.</p></div>
+        <div class="grid md:grid-cols-12 gap-4 py-10 border-b hair"><h3 class="serif text-3xl md:col-span-4">Engineer</h3><p class="mut md:col-span-6 md:col-start-7 text-lg max-w-[44ch]">We build AI agents, automations, and custom tools.</p></div>
+        <div class="grid md:grid-cols-12 gap-4 py-10 border-b hair"><h3 class="serif text-3xl md:col-span-4">Evolve</h3><p class="mut md:col-span-6 md:col-start-7 text-lg max-w-[44ch]">We launch, improve, and support your systems.</p></div>
       </div>
     </div>
   </section>
 
   <section id="join" class="py-[22vh]">
     <div class="mx-auto max-w-[900px] px-6 md:px-10 text-center">
-      <h2 class="serif text-[clamp(2.6rem,7vw,6rem)] leading-[.98]">Let's make your business work smarter.</h2>
-      <p class="mut mt-6 text-lg">Tell us what you're looking to build. We'll help you figure out what can be automated, connected, or created from scratch.</p>
+      <h2 class="serif text-[clamp(2.6rem,7vw,6rem)] leading-[.98]">Let's build something that works.</h2>
+      <p class="mut mt-6 text-lg">Tell us what you need. We'll help plan the right solution.</p>
       <div id="join-root" class="mt-12"></div>
     </div>
   </section>
@@ -110,12 +110,12 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- Command bar (functional) ---------- */
 const ACTIONS=[
- ['AI Voice Agents','Calls, inquiries and follow-ups','voice agent reception calling'],
- ['Workflow Automation','Connect tools and remove manual tasks','automation integrations workflows'],
- ['AI Customer Support','Intelligent, always-available assistance','support chatbot helpdesk'],
- ['Smart Booking Systems','Appointments, reminders and scheduling','booking schedule calendar appointments'],
- ['Custom Business Software','Built around your operations','custom apps software systems'],
- ['Business Integrations','Connect your existing platforms','integrations CRM API platforms']
+ ['AI Voice Agents','Calls, questions and follow-ups','voice agent reception calling'],
+ ['Workflow Automation','Connect apps. Cut manual tasks.','automation integrations workflows'],
+ ['AI Customer Support','Help customers around the clock','support chatbot helpdesk'],
+ ['Smart Booking Systems','Appointments and reminders','booking schedule calendar appointments'],
+ ['Custom Business Software','Tools built for your business','custom apps software systems'],
+ ['Business Integrations','Bring your tools together','integrations CRM API platforms']
 ];
 function Cmd(){
   const[q,setQ]=useState(''),[i,setI]=useState(0),[log,setLog]=useState([]);
@@ -135,7 +135,7 @@ function Cmd(){
         h('span',{className:'text-lg'},a[0]),h('span',{className:'mut text-sm hidden sm:block'},a[1])))
       :h('li',{className:'px-4 py-6 mut'},'Nothing matches “'+q+'”. Try “voice”, “booking” or “automation”.')),
     h('div',{className:'border-t hair px-6 py-4 text-sm min-h-[5.5rem]','aria-live':'polite'},
-      log.length?log.map((l,n)=>h('div',{key:l.k,className:'flex gap-3 '+(n?'mut':'')},h('span',{className:'mut'},'Explore'),h('span',null,l.t+' — tell us about your project below'))):h('span',{className:'mut'},'Select a service to see how Halo could help your business.')));
+      log.length?log.map((l,n)=>h('div',{key:l.k,className:'flex gap-3 '+(n?'mut':'')},h('span',{className:'mut'},'Explore'),h('span',null,l.t+' — tell us what you need below'))):h('span',{className:'mut'},'Select a service to see how Halo could help your business.')));
 }
 
 /* ---------- Project inquiries: email delivery via FormSubmit ---------- */
